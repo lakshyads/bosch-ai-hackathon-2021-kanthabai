@@ -1,8 +1,31 @@
-def split_data(images_dir_path, labels_dir_path, output_dir_path, should_create_test_set=True, should_move_files=False):
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--images', type=str, help='images directory path')
+parser.add_argument('--labels', type=str, help='labels directory path')
+parser.add_argument('--out', type=str, help='output directory path')
+parser.add_argument('--test', type=str, default='Y',
+                    help='should create test set along with train and val set.')
+parser.add_argument('--move', type=str, default='N',
+                    help='should move the files instead of copying them')
+opt = parser.parse_args()
+
+images_dir_path = opt.images
+labels_dir_path = opt.labels
+output_dir_path = opt.out
+should_create_test_set = opt.test
+should_move_files = opt.move
+
+
+def split_data(images_dir_path,
+               labels_dir_path,
+               output_dir_path,
+               should_create_test_set='Y',
+               should_move_files='N'):
 
     print('Splitting data into training, testing, and validation sets.')
     print(f'Output directory (out_dir) = {output_dir_path}')
-    if (should_move_files is True):
+    if (should_move_files == 'y' or should_move_files == 'Y'):
         print(f'Training data will be moved to <out_dir>/train')
         print(f'Validation data will be moved to <out_dir>/val')
         print(f'Testing data will be moved to <out_dir>/test')
@@ -19,7 +42,8 @@ def split_data(images_dir_path, labels_dir_path, output_dir_path, should_create_
 
     # Gather all image file names
     imgDirPath, _, imgFilenames = next(walk(images_dir_path))
-    imgFilenames = [name for name in set(imgFilenames) if (name.endswith(".jpg"))]
+    imgFilenames = [name for name in set(
+        imgFilenames) if (name.endswith(".jpg"))]
 
     # Gather all label file names
     lblDirPath, _, lblFilenames = next(walk(labels_dir_path))
@@ -31,10 +55,10 @@ def split_data(images_dir_path, labels_dir_path, output_dir_path, should_create_
 
     images_train = []
     images_test = []
-    labels_train = [] 
+    labels_train = []
     labels_test = []
 
-    if(should_create_test_set is True):
+    if(should_create_test_set == 'y' or should_create_test_set == 'Y'):
         # Split into training and test data
         [images_train, images_test, labels_train, labels_test] = train_test_split(
             imgFilenames, lblFilenames, test_size=0.2, random_state=42, shuffle=True)
@@ -54,7 +78,7 @@ def split_data(images_dir_path, labels_dir_path, output_dir_path, should_create_
             "name": "train",
             "images": images_train,
             "labels": labels_train,
-        },        
+        },
         {
             "name": "val",
             "images": images_validate,
@@ -62,7 +86,7 @@ def split_data(images_dir_path, labels_dir_path, output_dir_path, should_create_
         },
     ]
 
-    if(should_create_test_set is True):
+    if(should_create_test_set == 'y' or should_create_test_set == 'Y'):
         data_maps.append({
             "name": "test",
             "images": images_test,
@@ -83,28 +107,43 @@ def split_data(images_dir_path, labels_dir_path, output_dir_path, should_create_
             lblCount = 0
 
             for img in map['images']:
-                if (should_move_files is True):
-                    os.renames(joinPath(imgDirPath, img), joinPath(imgPath, img))
+                if (should_move_files == 'y' or should_move_files == 'Y'):
+                    os.renames(joinPath(imgDirPath, img),
+                               joinPath(imgPath, img))
                 else:
                     copy(joinPath(imgDirPath, img), joinPath(imgPath, img))
                 imgCount += 1
-            if (should_move_files is True):
-                print(f"Total {imgCount} {map['name']} images moved to {imgPath}")
+            if (should_move_files == 'y' or should_move_files == 'Y'):
+                print(
+                    f"Total {imgCount} {map['name']} images moved to {imgPath}")
             else:
-                print(f"Total {imgCount} {map['name']} images copied to {imgPath}")
+                print(
+                    f"Total {imgCount} {map['name']} images copied to {imgPath}")
 
             for lbl in map['labels']:
-                if (should_move_files is True):
-                    os.renames(joinPath(lblDirPath, lbl), joinPath(lblPath, lbl))
+                if (should_move_files == 'y' or should_move_files == 'Y'):
+                    os.renames(joinPath(lblDirPath, lbl),
+                               joinPath(lblPath, lbl))
                 else:
                     copy(joinPath(lblDirPath, lbl), joinPath(lblPath, lbl))
                 lblCount += 1
-            if (should_move_files is True):
-                print(f"Total {lblCount} {map['name']} labels moved to {lblPath}")
+            if (should_move_files == 'y' or should_move_files == 'Y'):
+                print(
+                    f"Total {lblCount} {map['name']} labels moved to {lblPath}")
             else:
-                print(f"Total {lblCount} {map['name']} labels copied to {lblPath}")
+                print(
+                    f"Total {lblCount} {map['name']} labels copied to {lblPath}")
     # if not created then raise error
     except Exception as e:
         print(
             f'-->Error<--: Something went wrong while trying to split data')
         print(f'-->Exception details: {e}')
+
+
+split_data(
+    images_dir_path=images_dir_path,
+    labels_dir_path=labels_dir_path,
+    output_dir_path=output_dir_path,
+    should_create_test_set=should_create_test_set,
+    should_move_files=should_move_files
+)
