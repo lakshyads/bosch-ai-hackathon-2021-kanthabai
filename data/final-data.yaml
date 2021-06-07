@@ -1,0 +1,13 @@
+# Data set for Bosch AI hackathon 2021
+# ------------------------------------
+
+# train and val data as 1) directory: path/images/, 2) file: path/images.txt, or 3) list: [path1/images/, path2/images/]
+train: # TO-DO: Update
+val: # TO-DO: Update
+test: # TO-DO: Update
+
+# number of classes
+nc: 4
+
+# class names
+names: ['Furniture', 'Door', 'Garments', 'Cables']

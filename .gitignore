@@ -6,7 +6,7 @@
 *.tif
 *.tiff
 *.heic
-*.JPG
+# *.JPG
 *.JPEG
 # *.PNG
 *.BMP
@@ -24,8 +24,9 @@
 !cfg/yolov3*.cfg
 
 storage.googleapis.com
+data/final-data-full/*
 # runs/*
-data/*
+# data/*
 !data/images/zidane.jpg
 !data/images/bus.jpg
 !data/coco.names
