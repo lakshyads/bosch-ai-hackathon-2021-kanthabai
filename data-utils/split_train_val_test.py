@@ -62,10 +62,13 @@ def split_data(images_dir_path,
         # Split into training and test data
         [images_train, images_test, labels_train, labels_test] = train_test_split(
             imgFilenames, lblFilenames, test_size=0.2, random_state=42, shuffle=True)
-
-    # Split training data into training and validation data
-    [images_train, images_validate, labels_train, labels_validate] = train_test_split(
-        images_train, labels_train, test_size=0.2, random_state=31, shuffle=True)
+        # Further Split training data into training and validation data
+        [images_train, images_validate, labels_train, labels_validate] = train_test_split(
+            images_train, labels_train, test_size=0.2, random_state=31, shuffle=True)
+    else:
+        # Split into training and val data
+        [images_train, images_validate, labels_train, labels_validate] = train_test_split(
+            imgFilenames, lblFilenames, test_size=0.2, random_state=41, shuffle=True)
 
     train_data_path = joinPath(output_dir_path, 'train')
     validate_data_path = joinPath(output_dir_path, 'validate')
